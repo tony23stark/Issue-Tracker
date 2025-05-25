@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import "./SignupPage.css";
 import Alert from "react-bootstrap/Alert";
 
-export default function SignupPage( prop) {
+export default function SignupPage() {
      const navigate = useNavigate();
      const [alertHead, setAlertHead] = useState("");
      const [alertBody, setAlertBody] = useState("");
@@ -128,7 +128,7 @@ export default function SignupPage( prop) {
                                              onChange={handleInputs}
                                         />
                                         <Form.Text className="text-muted">
-                                             We'll never share your email with
+                                             We&apos;ll never share your email with
                                              anyone else.
                                         </Form.Text>
                                    </Form.Group>
@@ -161,7 +161,7 @@ export default function SignupPage( prop) {
                                         Sign up
                                    </Button>
                               </Form>
-                              <a onClick={ () => { navigate("/login")}}>Login instead?</a>
+                              <p>Don&apos;t have an account?</p>
                          </div>
                     </div>
                </div>
@@ -196,7 +196,7 @@ export default function SignupPage( prop) {
                                              onChange={handleInputs}
                                         />
                                         <Form.Text className="text-muted">
-                                             We'll never share your email with
+                                             We&apos;ll never share your email with
                                              anyone else.
                                         </Form.Text>
                                    </Form.Group>
@@ -229,7 +229,7 @@ export default function SignupPage( prop) {
                                         Sign up
                                    </Button>
                               </Form>
-                              <a onClick={ () => { navigate("/login")}}>Login instead?</a>
+                              <p>Already have an account?</p>
                          </div>
                     </div>
                </div>

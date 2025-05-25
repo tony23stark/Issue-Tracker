@@ -1,6 +1,6 @@
 import React from "react";
 import UserCard from "./UserCard";
-import Aditya1 from "./StaticRES/Vijaychandsharma(1).jpeg";
+import vijay from "./StaticRES/Vijay.jpg";
 export default function Creaters() {
      return (
           <div style={{ padding: "20px" }}>
@@ -10,7 +10,7 @@ export default function Creaters() {
                          <UserCard
                               name={"Vijay Chand Sharma"}
                               branch={"Information and Technology"}
-                              image={Aditya1}
+                              image={vijay}
                               gitLink={"https://github.com/tony23stark"}
                          />
                     

@@ -30,3 +30,17 @@
           width: 0;
      }
 }
+
+.signup-link {
+     display: block;
+     margin-top: 15px;
+     color: #007bff;
+     text-decoration: none;
+     cursor: pointer;
+     text-align: center;
+}
+
+.signup-link:hover {
+     color: #0056b3;
+     text-decoration: underline;
+}

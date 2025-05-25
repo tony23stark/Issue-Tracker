@@ -6,10 +6,36 @@ import NavBar from "../../Components/NavBar";
 import ImageContainer from "../../Components/ImageContainer";
 import Spinner from "react-bootstrap/Spinner";
 
-export default function HomePage(prop) {
+export default function HomePage() {
      const [HtmlLoaded, setHtmlLoaded] = useState(false);
-
      const navigate = useNavigate();
+
+     const [currentUser, setCurrentUser] = useState({
+          name: "",
+          email: "",
+          organisations: [],
+          messages: 0,
+     });
+
+     useEffect(() => {
+          const checkAuth = async () => {
+               const currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
+               if (!currentUser_) {
+                    navigate("/");
+                    return;
+               }
+               setCurrentUser({
+                    name: currentUser_.name,
+                    emaill: currentUser_.email,
+                    organisations: currentUser_.organisations,
+                    messages: currentUser_.messages,
+                    _id: currentUser_._id,
+               });
+               setHtmlLoaded(true);
+          };
+          checkAuth();
+     }, [navigate]);
+
      const jumptoOrganisations = () => {
           navigate("/organisations");
      };
@@ -22,36 +48,19 @@ export default function HomePage(prop) {
           navigate("/aboutus");
      };
 
-     const [currentUser, setCurrentUser] = useState({
-          name: "",
-          email: "",
-          organisations: [],
-          messages: 0,
-     });
+     if (!HtmlLoaded) {
+          return (
+               <>
+                    <NavBar />
+                    <div className="SpinnerContainer">
+                         <Spinner animation="border" variant="dark" />
+                    </div>
+                    <Footer />
+               </>
+          );
+     }
 
-     let currentUser_ = {};
-     let profilePic = null;
-
-     useEffect(() => {
-          const doWork = async () => {
-               currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
-               if (currentUser_ == null) {
-                    navigate("/landing");
-               }
-               setCurrentUser({
-                    name: currentUser_.name,
-                    emaill: currentUser_.email,
-                    organisations: currentUser_.organisations,
-                    messages: currentUser_.messages,
-                    _id: currentUser_._id,
-               });
-               profilePic = currentUser_.profilePic;
-               setHtmlLoaded(true);
-          };
-          doWork();
-     }, []);
-
-     return HtmlLoaded ? (
+     return (
           <>
                <NavBar />
                <div className="HomePageOuterContainer">
@@ -88,7 +97,7 @@ export default function HomePage(prop) {
                                    </h4>
                               </div>
                          </div>
-                         <ImageContainer image={profilePic} />
+                         <ImageContainer image={currentUser.profilePic} />
                     </div>
                     <hr />
                     <div className="HomePageButtons">
@@ -102,7 +111,7 @@ export default function HomePage(prop) {
                     <hr />
                     <div className="appInfo">
                          <p>
-                              <b>Dizkuz</b> is a website that allows users in an
+                              <b>Issue Tracker</b> is a website that allows users in an
                               organisation to collaborate and discuss seamlessly
                               on various categories of topics in real time. This
                               app allows several organisations to have their
@@ -125,14 +134,6 @@ export default function HomePage(prop) {
                               Learn more about us
                          </div>
                     </div>
-               </div>
-               <Footer />
-          </>
-     ) : (
-          <>
-               <NavBar />
-               <div className="SpinnerContainer">
-                    <Spinner animation="border" variant="dark" />
                </div>
                <Footer />
           </>

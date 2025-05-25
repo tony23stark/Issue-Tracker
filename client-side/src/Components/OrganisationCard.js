@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Components.css";
 import Button from "react-bootstrap/Button";
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 
@@ -15,10 +14,7 @@ export default function OrganisationCard(prop) {
      const handleClose = () => {
           setShow(false);
      };
-     const handleShow = () => {
-          setShow(true);
-     };
-     const handleLeave = async (e) => {
+     const handleLeave = async () => {
           setShow(false);
           currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
           const out = {
@@ -68,11 +64,14 @@ export default function OrganisationCard(prop) {
           }
      };
 
-     const openOrganisation = () => {
-          const dizkuzData = JSON.parse(localStorage.getItem("dizkuzData"));
-          dizkuzData.currentOrganisation = prop.id;
-          dizkuzData.currentOrganisationName = prop.title;
-          localStorage.removeItem("dizkuzData");
+     const handleClick = () => {
+          const dizkuzData = {
+               currentOrganisation: prop.id,
+               currentOrganisationName: prop.title,
+               currentCategory: "none",
+               currentCategoryName: "none",
+               currentIssue: "none",
+          };
           localStorage.setItem("dizkuzData", JSON.stringify(dizkuzData));
           navigate("/categories");
      };
@@ -91,7 +90,7 @@ export default function OrganisationCard(prop) {
                          <Button
                               className="orgbtn"
                               variant="outline-primary"
-                              onClick={openOrganisation}
+                              onClick={handleClick}
                          >
                               Open
                          </Button>
@@ -109,7 +108,7 @@ export default function OrganisationCard(prop) {
                          <Modal.Title>Are you sure?</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                         Once you leave this, you won't be able to access it
+                         Once you leave this, you won&apos;t be able to access it
                          ever again.
                     </Modal.Body>
                     <Modal.Footer>

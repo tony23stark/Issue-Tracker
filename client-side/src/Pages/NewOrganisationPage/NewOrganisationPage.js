@@ -179,7 +179,7 @@ export default function NewOrganisationPage() {
                                         controlId="formBasicEmail"
                                    >
                                         <Form.Label>
-                                             Organisation's name
+                                             Organisation&apos;s name
                                         </Form.Label>
                                         <Form.Control
                                              type="text"
@@ -214,7 +214,7 @@ export default function NewOrganisationPage() {
                                              className="newUserIDUserInput"
                                         />
                                         <Form.Text className="text-muted">
-                                             Leave it blank if you don't want to
+                                             Leave it blank if you don&apos;t want to
                                              add more users.
                                         </Form.Text>
                                    </Form.Group>
@@ -255,7 +255,7 @@ export default function NewOrganisationPage() {
                                         controlId="formBasicEmail"
                                    >
                                         <Form.Label>
-                                             Organisation's name
+                                             Organisation&apos;s name
                                         </Form.Label>
                                         <Form.Control
                                              type="text"
@@ -290,7 +290,7 @@ export default function NewOrganisationPage() {
                                              className="newUserIDUserInput"
                                         />
                                         <Form.Text className="text-muted">
-                                             Leave it blank if you don't want to
+                                             Leave it blank if you don&apos;t want to
                                              add more users.
                                         </Form.Text>
                                    </Form.Group>

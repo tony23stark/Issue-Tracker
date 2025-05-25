@@ -25,7 +25,7 @@ function NewIssueModal(props) {
           setIssueDescription(e.target.value);
      };
 
-     const addIssue = async (e) => {
+     const addIssue = async () => {
           props.onHide();
           try {
                const dizkuzData = JSON.parse(
@@ -43,7 +43,7 @@ function NewIssueModal(props) {
                     DESCRIPTION: IssueDescription,
                     ID: CatID,
                };
-               const response = await fetch("https://dizkuz-server.onrender.com/newIssue", {
+               const response = await fetch("http://localhost:5000/newIssue", {
                     method: "POST",
                     body: JSON.stringify(inp),
                     headers: {
@@ -155,15 +155,22 @@ export default function IssuePage() {
           currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
           if (currentUser_ == null) {
                navigate("/landing");
+               return;
           }
+
+          const dizkuzData = JSON.parse(localStorage.getItem("dizkuzData"));
+          if (!dizkuzData || dizkuzData.currentCategory === "none") {
+               setAlertHead("No Category Selected");
+               setAlertBody("Please select a category from the Organizations page to view issues.");
+               setAlertVarient("warning");
+               setAlertShow(true);
+               setHtmlLoaded(true);
+               return;
+          }
+
           const doWork = async () => {
                try {
-                    const dizkuzData = JSON.parse(
-                         localStorage.getItem("dizkuzData")
-                    );
-                    const currentUser_ = JSON.parse(
-                         localStorage.getItem("currentUser")
-                    );
+                    const currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
                     setOrganisationName(dizkuzData.currentOrganisationName);
                     setCategoryName(dizkuzData.currentCategoryName);
                     const CatID = dizkuzData.currentCategory;
@@ -173,7 +180,7 @@ export default function IssuePage() {
                          ID: CatID,
                     };
                     const response = await fetch(
-                         "https://dizkuz-server.onrender.com/issues",
+                         "http://localhost:5000/issues",
                          {
                               method: "POST",
                               body: JSON.stringify(inp),
@@ -186,10 +193,10 @@ export default function IssuePage() {
                     if (fetchData.status === "authFailed") {
                          localStorage.removeItem("currentUser");
                          navigate("/landing");
-                    } else if (fetchData.status == "failed") {
-                         setAlertHead("Unknown error occured");
+                    } else if (fetchData.status === "failed") {
+                         setAlertHead("Unknown error occurred");
                          setAlertBody(
-                              "Due to some unexpected error, the issues were not loaaded. Please try again."
+                              "Due to some unexpected error, the issues were not loaded. Please try again."
                          );
                          setAlertVarient("danger");
                          setAlertShow(true);
@@ -197,7 +204,7 @@ export default function IssuePage() {
                          const LoadedData = fetchData.data;
                          const Issues = LoadedData;
                          let tempVar;
-                         if (Issues.length == 0) {
+                         if (Issues.length === 0) {
                               tempVar = (
                                    <div
                                         style={{
@@ -206,32 +213,27 @@ export default function IssuePage() {
                                              color: "darkred",
                                         }}
                                    >
-                                        <h4>Sorry, No issue exists.</h4>
+                                        <h4>No issues exist in this category.</h4>
                                    </div>
                               );
                          } else {
-                              tempVar = Issues.map((issue) => {
-                                   return (
-                                        <div>
-                                             <IssueCard
-                                                  title={issue.title}
-                                                  body={issue.body}
-                                                  id={issue._id}
-                                                  author={issue.author}
-                                                  date={issue.date}
-                                                  key={issue.id}
-                                             />
-                                        </div>
-                                   );
-                              });
+                              tempVar = Issues.map((issue) => (
+                                   <div key={issue._id}>
+                                        <IssueCard
+                                             title={issue.title}
+                                             body={issue.body}
+                                             id={issue._id}
+                                             author={issue.author}
+                                             date={issue.date}
+                                        />
+                                   </div>
+                              ));
                          }
-                         const tempIssueComponent = tempVar;
-                         setRerenderer(!rerenderer);
-                         setIssueComponent(tempIssueComponent);
+                         setIssueComponent(tempVar);
                          setHtmlLoaded(true);
                     }
                } catch (error) {
-                    setAlertHead("Unexpected error occured!");
+                    setAlertHead("Unexpected error occurred!");
                     setAlertBody(
                          "Due to some unexpected error we were not able to get the issues for you. Please check your connection and try again..."
                     );

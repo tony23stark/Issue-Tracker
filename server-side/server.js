@@ -2,6 +2,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require('dotenv').config();
 // requiring routes
 const LOGIN = require("./routes/login");
 const SIGNUP = require("./routes/signUp");
@@ -17,18 +18,26 @@ const MEMBERS = require("./routes/members");
 const NEWISSUE = require("./routes/newIssue");
 const SENDCHAT = require("./routes/newMessage");
 
-main().catch((err) => console.log(err));
-
 // connecting mongodb
 async function main() {
-     await mongoose.connect(
-          process.env.MONGO_CONNECTION
-     );
-     console.log("db connected");
+     try {
+          const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/issue-tracker";
+          await mongoose.connect(MONGODB_URI, {
+               useNewUrlParser: true,
+               useUnifiedTopology: true
+          });
+          console.log("MongoDB connected successfully");
+     } catch (error) {
+          console.error("MongoDB connection error:", error);
+          process.exit(1);
+     }
 }
+
+main().catch((err) => console.log(err));
 
 const server = express();
 server.use(cors());
+server.use(express.json());
 
 // user login
 server.use("/login", LOGIN);
@@ -58,6 +67,7 @@ server.use("/newIssue", NEWISSUE);
 server.use("/sendmessage", SENDCHAT);
 
 // starting server
-server.listen(8080, () => {
-     console.log("server started");
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+     console.log(`Server started on port ${PORT}`);
 });

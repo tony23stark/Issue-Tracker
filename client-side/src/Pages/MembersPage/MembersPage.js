@@ -79,15 +79,15 @@ export default function MembersPage() {
                                    </div>
                               );
                          } else {
-                              tempVar = Members.map((member) => {
-                                   return (
+                              tempVar = Members.map((member) => (
+                                   <div key={member._id}>
                                         <MemberCard
                                              name={member.name}
                                              email={member.email}
-                                             _id={member._id}
+                                             id={member._id}
                                         />
-                                   );
-                              });
+                                   </div>
+                              ));
                          }
                          const tempMemberComponent = tempVar;
 

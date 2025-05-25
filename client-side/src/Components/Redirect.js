@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { json, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 

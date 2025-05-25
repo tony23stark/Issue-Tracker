@@ -26,7 +26,6 @@ export default function ChatPage() {
      const [alertBody, setAlertBody] = useState("");
      const [alertVarient, setAlertVarient] = useState("");
      const [Alertshow, setAlertShow] = useState(false);
-     const [rerenderer, setRerenderer] = useState(false);
      const [currentSender, setCurrentSender] = useState("");
      const [currentIssue, setCurrentIssue] = useState("");
      const [chatReloader, setChatReloader] = useState(1);
@@ -40,16 +39,22 @@ export default function ChatPage() {
           currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
           if (currentUser_ == null) {
                navigate("/landing");
+               return;
+          }
+
+          const dizkuzData = JSON.parse(localStorage.getItem("dizkuzData"));
+          if (!dizkuzData || dizkuzData.currentIssue === "none") {
+               setAlertHead("No Issue Selected");
+               setAlertBody("Please select an issue to view its chat messages.");
+               setAlertVarient("warning");
+               setAlertShow(true);
+               setHtmlLoaded(true);
+               return;
           }
 
           const doWork = async () => {
                try {
-                    const dizkuzData = JSON.parse(
-                         localStorage.getItem("dizkuzData")
-                    );
-                    const currentUser_ = JSON.parse(
-                         localStorage.getItem("currentUser")
-                    );
+                    const currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
                     const IssID = dizkuzData.currentIssue;
                     const UsrID = currentUser_._id;
 
@@ -63,7 +68,7 @@ export default function ChatPage() {
                          UserID: UsrID,
                     };
                     const response = await fetch(
-                         "https://dizkuz-server.onrender.com/chats",
+                         "http://localhost:5000/chats",
                          {
                               method: "POST",
                               body: JSON.stringify(inp),
@@ -76,8 +81,8 @@ export default function ChatPage() {
                     if (fetchData.status === "authFailed") {
                          localStorage.removeItem("currentUser");
                          navigate("/landing");
-                    } else if (fetchData.status == "failed") {
-                         setAlertHead("Unknown error occured");
+                    } else if (fetchData.status === "failed") {
+                         setAlertHead("Unknown error occurred");
                          setAlertBody(
                               "Due to some unexpected error messages are unable to be loaded. Please try again."
                          );
@@ -87,7 +92,7 @@ export default function ChatPage() {
                          const LoadedData = fetchData.data;
                          const Messages = LoadedData;
                          let tempVar;
-                         if (Messages.length == 0) {
+                         if (Messages.length === 0) {
                               tempVar = (
                                    <div
                                         style={{
@@ -97,40 +102,34 @@ export default function ChatPage() {
                                         }}
                                    >
                                         <h4>
-                                             No conversation exists in this
-                                             chat. Send a message to start a
-                                             conversation...
+                                             No conversation exists in this chat. Send a message to start a conversation...
                                         </h4>
                                    </div>
                               );
                          } else {
-                              tempVar = Messages.map((message) => {
-                                   return message.userAuth ? (
-                                        <div>
+                              tempVar = Messages.map((message, index) => (
+                                   <div key={index}>
+                                        {message.userAuth ? (
                                              <MessageCardOther
                                                   author={message.author}
                                                   text={message.text}
                                                   dateTime={message.dateTime}
                                              />
-                                        </div>
-                                   ) : (
-                                        <div>
+                                        ) : (
                                              <MessageCardUser
                                                   author={message.author}
                                                   text={message.text}
                                                   dateTime={message.dateTime}
                                              />
-                                        </div>
-                                   );
-                              });
+                                        )}
+                                   </div>
+                              ));
                          }
-                         const tempMessageComponent = tempVar;
-                         setRerenderer(!rerenderer);
-                         setMessageComponent(tempMessageComponent);
+                         setMessageComponent(tempVar);
                          setHtmlLoaded(true);
                     }
                } catch (error) {
-                    setAlertHead("Unexpected error occured!");
+                    setAlertHead("Unexpected error occurred!");
                     setAlertBody(
                          "Due to some unexpected error we were not able to get the Messages for you. Please check your connection and try again..."
                     );
@@ -139,9 +138,14 @@ export default function ChatPage() {
                }
           };
           doWork();
-          setInterval(() => {
+          
+          // Set up auto-refresh interval
+          const intervalId = setInterval(() => {
                startReloading();
           }, 5000);
+
+          // Cleanup interval on component unmount
+          return () => clearInterval(intervalId);
      }, [chatReloader]);
 
      return HtmlLoaded ? (

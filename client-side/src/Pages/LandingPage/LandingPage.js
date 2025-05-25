@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Landing_img from "./Landing_img.jpg";
 import Button from "react-bootstrap/Button";
@@ -14,18 +14,9 @@ export default function LandingPage() {
           navigate("/signup");
      };
 
-     const [currentUser, setCurrentUser] = useState({
-          name: null,
-          email: null,
-          password: null,
-          organisations: [],
-          messages: 0,
-     });
-
      useEffect(() => {
           const currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
-          setCurrentUser(currentUser_);
-          if (currentUser.name == null) {
+          if (currentUser_ && currentUser_.name == null) {
                navigate("/landing");
           }
      }, []);
@@ -39,7 +30,7 @@ export default function LandingPage() {
                          </div>
                          <div className="LandingPageChild2">
                               <h1>
-                                   Welcome to <b>Dizkuz</b>
+                                   Welcome to <b>Issue Tracker</b>
                               </h1>
                               <Button
                                    className="button"

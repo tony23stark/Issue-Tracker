@@ -19,7 +19,7 @@ function NewCategoryModal(props) {
           setCategoryName(e.target.value);
      };
 
-     const addCategory = async (e) => {
+     const addCategory = async () => {
           props.onHide();
           try {
                const dizkuzData = JSON.parse(
@@ -132,7 +132,7 @@ export default function CategoryPage(props) {
      const [CategoryComponent, setCategoryComponent] = useState(<></>);
      const [reloader, setreloader] = useState(false);
 
-     const JumpToNewCategory = async (e) => {
+     const JumpToNewCategory = () => {
           setModalShow(true);
      };
 
@@ -167,7 +167,7 @@ export default function CategoryPage(props) {
                          ID: OrgID,
                     };
                     const response = await fetch(
-                         "https://dizkuz-server.onrender.com/categories",
+                         "http://localhost:5000/categories",
                          {
                               method: "POST",
                               body: JSON.stringify(inp),
@@ -208,17 +208,17 @@ export default function CategoryPage(props) {
                                    </div>
                               );
                          } else {
-                              tempVar = Categories.map((category) => {
-                                   return (
-                                        <div>
-                                             <CategoryCard
-                                                  title={category.name}
-                                                  id={category._id}
-                                                  key={category._id}
-                                             />
-                                        </div>
-                                   );
-                              });
+                              tempVar = Categories.map((category) => (
+                                   <div key={category._id}>
+                                        <CategoryCard
+                                             title={category.title}
+                                             body={category.body}
+                                             id={category._id}
+                                             author={category.author}
+                                             date={category.date}
+                                        />
+                                   </div>
+                              ));
                          }
                          const tempCategoryComponent = tempVar;
                          setreloader(!reloader);

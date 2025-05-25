@@ -1,28 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Login_img from "./Landing_img.jpg";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import "./LoginPage.css";
 import Alert from "react-bootstrap/Alert";
 
-export default function LoginPage(prop) {
+export default function LoginPage() {
      const [alertHead, setAlertHead] = useState("");
      const [alertBody, setAlertBody] = useState("");
      const [show, setShow] = useState(false);
-
-     let currentUser_ = {};
 
      const [userCredentials, setUserCredentials] = useState({
           email: "",
           password: "",
      });
      const navigate = useNavigate();
-
-     const CheckLogin = () => {
-          prop.setUser(true);
-          navigate("/");
-     };
 
      const handleInputs = (e) => {
           const Name = e.target.name;
@@ -33,9 +26,13 @@ export default function LoginPage(prop) {
      const handleSubmit = async (e) => {
           e.preventDefault();
           try {
+               const inp = {
+                    email: userCredentials.email,
+                    password: userCredentials.password,
+               };
                const response = await fetch("https://dizkuz-server.onrender.com/login", {
                     method: "POST",
-                    body: JSON.stringify(userCredentials),
+                    body: JSON.stringify(inp),
                     headers: {
                          "Content-Type": "application/json",
                     },
@@ -48,7 +45,6 @@ export default function LoginPage(prop) {
                     );
                     setShow(true);
                } else {
-                    const check = data.password;
                     if (data.status === "matched") {
                          const curUser = {
                               name: data.name,
@@ -63,7 +59,7 @@ export default function LoginPage(prop) {
                               "currentUser",
                               JSON.stringify(curUser)
                          );
-                         navigate("/");
+                         navigate("/home");
                     } else {
                          setAlertHead("Incorrect password!");
                          setAlertBody(
@@ -86,106 +82,63 @@ export default function LoginPage(prop) {
      useEffect(() => {
           const currentUser_ = JSON.parse(localStorage.getItem("currentUser"));
           if (currentUser_ != null) {
-               navigate("/");
+               navigate("/home");
           }
-     }, []);
+     }, [navigate]);
 
-     return show ? (
-          <>
-               <Alert
-                    variant="danger"
-                    onClose={() => setShow(false)}
-                    dismissible
-               >
-                    <Alert.Heading>{alertHead}</Alert.Heading>
-                    <p>{alertBody}</p>
-               </Alert>
-               <div className="LoginContainer">
-                    <div className="LoginPageContainer">
-                         <div className="LoginPageChild1">
-                              <img src={Login_img} alt="img" />
-                         </div>
-                         <div className="LoginPageChild2">
-                              <Form onSubmit={handleSubmit}>
-                                   <Form.Group
-                                        className="mb-3"
-                                        controlId="formBasicEmail"
-                                   >
-                                        <Form.Label>Email address</Form.Label>
-                                        <Form.Control
-                                             type="email"
-                                             name="email"
-                                             placeholder="Enter email"
-                                             required
-                                             onChange={handleInputs}
-                                        />
-                                   </Form.Group>
-                                   <Form.Group
-                                        className="mb-3"
-                                        controlId="formBasicPassword"
-                                   >
-                                        <Form.Label>Password</Form.Label>
-                                        <Form.Control
-                                             type="password"
-                                             name="password"
-                                             placeholder="Password"
-                                             required
-                                             onChange={handleInputs}
-                                        />
-                                   </Form.Group>
-                                   <Button variant="primary" type="submit">
-                                        Login
-                                   </Button>
-                              </Form>
-                              <a onClick={ () => { navigate("/signup")}}>Sign up instead?</a>
-                         </div>
+     return (
+          <div className="LoginContainer">
+               {show && (
+                    <Alert
+                         variant="danger"
+                         onClose={() => setShow(false)}
+                         dismissible
+                    >
+                         <Alert.Heading>{alertHead}</Alert.Heading>
+                         <p>{alertBody}</p>
+                    </Alert>
+               )}
+               <div className="LoginPageContainer">
+                    <div className="LoginPageChild1">
+                         <img src={Login_img} alt="img" />
+                    </div>
+                    <div className="LoginPageChild2">
+                         <Form onSubmit={handleSubmit}>
+                              <Form.Group
+                                   className="mb-3"
+                                   controlId="formBasicEmail"
+                              >
+                                   <Form.Label>Email address</Form.Label>
+                                   <Form.Control
+                                        type="email"
+                                        name="email"
+                                        placeholder="Enter email"
+                                        required
+                                        onChange={handleInputs}
+                                   />
+                              </Form.Group>
+                              <Form.Group
+                                   className="mb-3"
+                                   controlId="formBasicPassword"
+                              >
+                                   <Form.Label>Password</Form.Label>
+                                   <Form.Control
+                                        type="password"
+                                        name="password"
+                                        placeholder="Password"
+                                        required
+                                        onChange={handleInputs}
+                                   />
+                              </Form.Group>
+                              <Button variant="primary" type="submit">
+                                   Login
+                              </Button>
+                         </Form>
+                         <Link to="/signup" className="signup-link">
+                              Sign up instead?
+                         </Link>
                     </div>
                </div>
-          </>
-     ) : (
-          <>
-               <div className="LoginContainer">
-                    <div className="LoginPageContainer">
-                         <div className="LoginPageChild1">
-                              <img src={Login_img} alt="img" />
-                         </div>
-                         <div className="LoginPageChild2">
-                              <Form onSubmit={handleSubmit}>
-                                   <Form.Group
-                                        className="mb-3"
-                                        controlId="formBasicEmail"
-                                   >
-                                        <Form.Label>Email address</Form.Label>
-                                        <Form.Control
-                                             type="email"
-                                             name="email"
-                                             placeholder="Enter email"
-                                             required
-                                             onChange={handleInputs}
-                                        />
-                                   </Form.Group>
-                                   <Form.Group
-                                        className="mb-3"
-                                        controlId="formBasicPassword"
-                                   >
-                                        <Form.Label>Password</Form.Label>
-                                        <Form.Control
-                                             type="password"
-                                             name="password"
-                                             placeholder="Password"
-                                             required
-                                             onChange={handleInputs}
-                                        />
-                                   </Form.Group>
-
-                                   <Button variant="primary" type="submit">
-                                        Login
-                                   </Button>
-                              </Form>
-                              <a onClick={ () => { navigate("/signup")}}>Sign up instead?</a>
-                         </div>
-                    </div>
-               </div>
-          </>
+          </div>
      );
 }

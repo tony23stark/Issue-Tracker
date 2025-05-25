@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import OrganisationCard from "../../Components/OrganisationCard";
-import testImg from "./testimg.jpeg";
 import "./OrganisationPage.css";
 import Footer from "../../Components/Footer";
 import NavBar from "../../Components/NavBar";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
-export default function OrganisationsPage(prop) {
+export default function OrganisationsPage() {
      const navigate = useNavigate();
      let currentUser_ = {};
 
@@ -78,11 +77,10 @@ export default function OrganisationsPage(prop) {
                          } else {
                               tempCardsComponent = cards.map((card) => {
                                    return (
-                                        <div>
+                                        <div key={card._id}>
                                              <OrganisationCard
                                                   title={card.name}
                                                   id={card._id}
-                                                  key={card._id}
                                                   rerenderer={rerenderer}
                                                   setRerenderer={setRerenderer}
                                              />
